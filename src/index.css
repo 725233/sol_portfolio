@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-navy-950 font-sans text-ink antialiased;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: rgba(124, 184, 255, 0.35);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid #7cb8ff;
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  [tabindex="-1"]:focus {
+    outline: none;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  section[id] {
+    scroll-margin-top: 88px;
+  }
+}
+
+@layer components {
+  /* Frosted glass surface. Used sparingly, for things you interact with. */
+  .glass {
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(200, 220, 255, 0.16);
+    box-shadow: 0 10px 30px rgba(0, 4, 20, 0.4);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass {
+      background: rgba(16, 34, 74, 0.9);
+    }
+  }
+
+  .eyebrow {
+    @apply font-mono text-[13px] tracking-[0.04em] text-accent;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[15px] font-medium transition duration-300;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-navy-950 hover:bg-white hover:shadow-[0_0_28px_rgba(124,184,255,0.45)];
+  }
+  .btn-glass {
+    @apply btn glass text-ink hover:border-accent/50 hover:bg-white/10 hover:shadow-[0_0_28px_rgba(90,160,255,0.25)];
+  }
+
+  .tag {
+    @apply inline-flex items-center rounded-full border border-white/15 px-2.5 py-1 font-mono text-[12px] leading-none text-ink-soft;
+  }
+
+  .icon-btn {
+    @apply grid h-11 w-11 place-items-center rounded-xl text-ink/80 transition duration-200 hover:-translate-y-0.5 hover:bg-accent/15 hover:text-accent hover:shadow-[0_0_18px_rgba(90,160,255,0.25)];
+  }
+}
+
+/* Background: navy-to-blue blend with a soft glow and a faint dot grid */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 80% 12%, rgba(64, 140, 255, 0.24), transparent 70%),
+    radial-gradient(50% 45% at 8% 88%, rgba(40, 90, 200, 0.18), transparent 70%),
+    linear-gradient(165deg, #050b1a 0%, #0a1a3a 50%, #0f2a5e 100%);
+}
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(180, 210, 255, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+}
+
+/* Welcome "Hi." */
+.hi-text {
+  background: linear-gradient(180deg, #ffffff 30%, #a9cbff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Motion. Everything is visible without JS or with reduced motion. ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s cubic-bezier(.2,.8,.2,1), transform 0.7s cubic-bezier(.2,.8,.2,1);
+    transition-delay: var(--delay, 0ms);
+  }
+  .js .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Letter-by-letter heading */
+  .js .letters .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.45em);
+    transition: opacity 0.6s cubic-bezier(.2,.8,.2,1), transform 0.6s cubic-bezier(.2,.8,.2,1);
+    transition-delay: calc(var(--i) * 55ms);
+  }
+  .js .letters.is-in .ch {
+    opacity: 1;
+    transform: none;
+  }
+
+  .welcome-leave {
+    opacity: 0;
+    transform: scale(0.96) translateY(-20px);
+    filter: blur(8px);
+  }
+  .page-enter {
+    animation: page-enter 0.8s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes page-enter {
+    from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+
+  /* Signals travelling along the hero system map */
+  .signal {
+    animation: signal 3.6s linear infinite;
+  }
+  @keyframes signal {
+    from { stroke-dashoffset: 120; }
+    to { stroke-dashoffset: 0; }
+  }
+  .pulse {
+    animation: pulse 2.8s ease-in-out infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.25); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Native dialog */
+dialog::backdrop {
+  background: rgba(3, 8, 20, 0.7);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
